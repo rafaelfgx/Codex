@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Form</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --primary: #2563eb;
+            --page-background: #e4e9f1;
+            --text: #243247;
+            --surface: #ffffff;
+            --field-background: #ffffff;
+            --border-soft: #d5dde8;
+            --border: #94a3b8;
+            --accent: var(--primary);
+            --highlight: #dbeafe;
+            --disabled-background: #f1f5f9;
+            --disabled-text: #64748b;
+            --placeholder: #757575;
+            --shadow: #2432470d;
+        }
+
+        :root[data-theme="dark"] {
+            color-scheme: dark;
+            --page-background: #161616;
+            --text: #e6e6e6;
+            --surface: #1c1c1c;
+            --field-background: #333333;
+            --border-soft: #2e2e2e;
+            --border: #3d3d3d;
+            --accent: #f5f5f5;
+            --highlight: #444444;
+            --disabled-background: #242424;
+            --disabled-text: #777777;
+            --placeholder: #8a8a8a;
+            --shadow: #00000080;
+        }
+
+        * {
+            font-family: "Segoe UI", system-ui, sans-serif;
+            font-size: 16px;
+        }
+
+        body {
+            margin: 0;
+            padding: 2rem 1rem;
+            background: var(--page-background);
+            color: var(--text);
+        }
+
+        main {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .theme {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .theme label,
+        .group label,
+        .flag-options label,
+        .flag-details summary {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .theme input,
+        .group input {
+            width: auto;
+            height: auto;
+            margin: 0;
+        }
+
+        form {
+            padding: 2rem;
+            background: var(--surface);
+            border: 1px solid var(--border-soft);
+            border-radius: 16px;
+        }
+
+        form,
+        .flag-options {
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        fieldset {
+            display: grid;
+            grid-template-columns: max-content minmax(0, 1fr);
+            align-items: center;
+            gap: 0.75rem 1.25rem;
+            min-width: 0;
+            margin: 0 0 1.5rem;
+            padding: 1.25rem;
+            border: 1px solid var(--border-soft);
+            border-radius: 10px;
+        }
+
+        legend {
+            grid-column: 1 / -1;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 0 0.5rem;
+            color: var(--accent);
+        }
+
+        label {
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        .flag-details summary,
+        .flag-options {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--field-background);
+            color: inherit;
+        }
+
+        input,
+        select,
+        .flag-details summary {
+            box-sizing: border-box;
+            height: 2.5rem;
+            min-width: 0;
+            width: 100%;
+            padding: 0 0.625rem;
+        }
+
+        input::placeholder {
+            color: var(--placeholder);
+        }
+
+        input:focus-visible,
+        select:focus-visible,
+        button:focus-visible,
+        .flag-details summary:focus-visible,
+        .flag-options label:has(input:focus-visible) {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        input:disabled,
+        select:disabled {
+            background-color: var(--disabled-background);
+            color: var(--disabled-text);
+            opacity: 1;
+        }
+
+        select,
+        .flag-details summary {
+            appearance: none;
+            padding-right: 2rem;
+            background-image:
+                linear-gradient(to top right, transparent calc(50% - 0.75px), currentColor calc(50% - 0.75px), currentColor calc(50% + 0.75px), transparent calc(50% + 0.75px)),
+                linear-gradient(to bottom right, transparent calc(50% - 0.75px), currentColor calc(50% - 0.75px), currentColor calc(50% + 0.75px), transparent calc(50% + 0.75px));
+            background-position: right 1.15rem center, right 0.75rem center;
+            background-size: 0.4rem 0.4rem;
+            background-repeat: no-repeat;
+        }
+
+        select[multiple] {
+            height: auto;
+            padding: 0.375rem 0.625rem;
+            background-image: none;
+        }
+
+        .group {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.5rem 1rem;
+        }
+
+        .group label {
+            padding: 0.5rem 0;
+            font-weight: 400;
+            cursor: pointer;
+        }
+
+        .group input {
+            flex: none;
+            width: 1.5rem;
+            height: 1.5rem;
+            cursor: pointer;
+        }
+
+        .flag-details {
+            position: relative;
+        }
+
+        .flag-details summary {
+            padding-left: 0.625rem;
+            list-style: none;
+        }
+
+        .flag-details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .flag-details img {
+            width: 1.75rem;
+            height: 1.25rem;
+            object-fit: contain;
+        }
+
+        .flag-options {
+            position: absolute;
+            z-index: 1;
+            top: calc(100% + 0.25rem);
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            max-height: 15rem;
+            overflow-y: auto;
+            padding: 0.25rem;
+        }
+
+        .flag-options label {
+            padding: 0.375rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 400;
+        }
+
+        .flag-options label:hover,
+        .flag-options label:has(input:checked) {
+            background: var(--highlight);
+        }
+
+        .flag-options input {
+            position: absolute;
+            width: 0;
+            height: 0;
+            opacity: 0;
+        }
+
+        meter, progress {
+            height: 35px;
+        }
+
+        button {
+            display: block;
+            margin-left: auto;
+            padding: 0.625rem 1.75rem;
+            border: 0;
+            border-radius: 6px;
+            background: var(--primary);
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="theme">
+            <label for="theme.mode_dark"><input id="theme.mode_dark" name="theme.mode" type="radio" value="dark" checked>Dark</label>
+            <label for="theme.mode_light"><input id="theme.mode_light" name="theme.mode" type="radio" value="light">Light</label>
+        </div>
+
+        <form>
+            <fieldset>
+                <legend>Personal Information</legend>
+
+                <label for="person.full_name">Full Name</label>
+                <input id="person.full_name" name="person.full_name" type="text">
+
+                <label for="person.first_name">First Name</label>
+                <input id="person.first_name" name="person.first_name" type="text">
+
+                <label for="person.last_name">Last Name</label>
+                <input id="person.last_name" name="person.last_name" type="text">
+
+                <label for="person.social_name">Social Name</label>
+                <input id="person.social_name" name="person.social_name" type="text">
+
+                <label for="person.preferred_name">Preferred Name</label>
+                <input id="person.preferred_name" name="person.preferred_name" type="text">
+
+                <label for="person.birth_date">Birth Date</label>
+                <input id="person.birth_date" name="person.birth_date" type="date">
+
+                <label for="person.gender">Gender</label>
+                <select id="person.gender" name="person.gender">
+                    <option value=""></option>
+                    <option value="F">Female</option>
+                    <option value="M">Male</option>
+                </select>
+
+                <label for="person.nationality">Nationality</label>
+                <details id="person.nationality" class="flag-details">
+                    <summary></summary>
+                    <div class="flag-options"></div>
+                </details>
+
+                <label for="person.document">Document</label>
+                <input id="person.document" name="person.document" type="text">
+
+                <label for="person.languages">Languages</label>
+                <div class="group">
+                    <label><input id="person.languages_en" name="person.languages_en" type="checkbox" value="en">English</label>
+                    <label><input id="person.languages_es" name="person.languages_es" type="checkbox" value="es">Spanish</label>
+                    <label><input id="person.languages_pt" name="person.languages_pt" type="checkbox" value="pt">Portuguese</label>
+                    <label><input id="person.languages_fr" name="person.languages_fr" type="checkbox" value="fr">French</label>
+                    <label><input id="person.languages_it" name="person.languages_it" type="checkbox" value="it">Italian</label>
+                    <label><input id="person.languages_de" name="person.languages_de" type="checkbox" value="de">German</label>
+                    <label><input id="person.languages_zh" name="person.languages_zh" type="checkbox" value="zh">Chinese</label>
+                    <label><input id="person.languages_ja" name="person.languages_ja" type="checkbox" value="ja">Japanese</label>
+                    <label><input id="person.languages_xx" name="person.languages_xx" type="checkbox" value="xx">Other</label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Contact</legend>
+
+                <label for="contact.email">Email</label>
+                <input id="contact.email" name="contact.email" type="email">
+
+                <label for="contact.phone">Phone</label>
+                <input id="contact.phone" name="contact.phone" type="tel">
+
+                <label for="contact.website">Website</label>
+                <input id="contact.website" name="contact.website" type="url">
+
+                <label for="contact.linkedin">LinkedIn</label>
+                <input id="contact.linkedin" name="contact.linkedin" type="url" placeholder="https://www.linkedin.com/in/username">
+
+                <label for="contact.github">GitHub</label>
+                <input id="contact.github" name="contact.github" type="url" placeholder="https://github.com/username">
+            </fieldset>
+
+            <fieldset>
+                <legend>Address</legend>
+
+                <label for="address.country">Country</label>
+                <select id="address.country" name="address.country">
+                    <option value=""></option>
+                </select>
+
+                <label for="address.state">State / Province / Region</label>
+                <select id="address.state" name="address.state" disabled>
+                    <option value=""></option>
+                </select>
+
+                <label for="address.city">City</label>
+                <select id="address.city" name="address.city" disabled>
+                    <option value=""></option>
+                </select>
+
+                <label for="address.postal_code">Postal Code</label>
+                <input id="address.postal_code" name="address.postal_code" type="text">                
+
+                <label for="address.neighborhood">Neighborhood</label>
+                <input id="address.neighborhood" name="address.neighborhood" type="text">
+
+                <label for="address.street">Street</label>
+                <input id="address.street" name="address.street" type="text">
+
+                <label for="address.number">Number</label>
+                <input id="address.number" name="address.number" type="text" inputmode="numeric">
+
+                <label for="address.complement">Complement</label>
+                <input id="address.complement" name="address.complement" type="text">
+
+                <label for="address.landmark">Landmark</label>
+                <input id="address.landmark" name="address.landmark" type="text">
+            </fieldset>
+
+            <fieldset>
+                <legend>Authentication</legend>
+
+                <label for="authentication.username">Username</label>
+                <input id="authentication.username" name="authentication.username" type="text">
+
+                <label for="authentication.password">Password</label>
+                <input id="authentication.password" name="authentication.password" type="password">
+            </fieldset>
+
+            <fieldset>
+                <legend>Others</legend>
+
+                <label for="others.date">Date</label>
+                <input id="others.date" name="others.date" type="date">
+
+                <label for="others.time">Time</label>
+                <input id="others.time" name="others.time" type="time">
+
+                <label for="others.datetime">Date and Time</label>
+                <input id="others.datetime" name="others.datetime" type="datetime-local">
+
+                <label id="others.range.label" for="others.range">Range</label>
+                <input id="others.range" name="others.range" type="range" min="0" max="100" value="0" oninput="document.getElementById('others.range.label').textContent = 'Range (' + this.value + ')'">
+                
+                <label for="others.colors">Color</label>
+                <input id="others.colors" name="others.colors" type="color">
+
+                <label for="others.meter">Meter</label>
+                <meter id="others.meter" name="others.meter" min="0" max="100" low="40" high="60" optimum="80" value="10" title="Click" onclick="this.value = Math.min(Number(this.value) + 10, 100)"></meter>
+
+                <label for="others.progress">Progress</label>
+                <progress id="others.progress" name="others.progress" max="100" value="0" title="Click" onclick="this.value = Math.min(Number(this.value) + 10, 100)"></progress>
+            </fieldset>
+
+            <button id="save" type="button">Save</button>
+        </form>
+    </main>
+
+    <script>
+        function initializeFlags() {
+            const countries = "AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW".split(" ");
+            const regions = new Intl.DisplayNames(["en"], { type: "region" });
+            const flag = document.getElementById("person.nationality");
+            const flagSummary = flag.querySelector("summary");
+            const flagOptions = flag.querySelector(".flag-options");
+
+            function createContent(code) {
+                const image = new Image();
+                image.src = `https://flagcdn.com/w40/${code.toLowerCase()}.png`;
+                image.alt = "";
+                image.loading = "lazy";
+                const name = document.createElement("span");
+                name.textContent = regions.of(code);
+                return [image, name];
+            }
+
+            function createOption(code) {
+                const input = document.createElement("input");
+                input.type = "radio";
+                input.id = `person.nationality_${code.toLowerCase()}`;
+                input.name = "person.nationality";
+                input.value = code;
+                const label = document.createElement("label");
+                label.append(input, ...createContent(code));
+                return label;
+            }
+
+            flagOptions.append(...countries.sort((first, second) => regions.of(first).localeCompare(regions.of(second), "en")).map(createOption));
+
+            flagOptions.onchange = (event) => {
+                flagSummary.replaceChildren(...createContent(event.target.value));
+                flag.open = false;
+            };
+
+            document.addEventListener("click", (event) => {
+                if (!flag.contains(event.target)) flag.open = false;
+            });
+        }
+
+        function initializeLocations() {
+            const locations = [[1, "Asteria", [[2, "Northreach", [[3, "Frostfall"], [4, "Moonhaven"], [5, "Starling"]]], [6, "Sunmere", [[7, "Amberwick"], [8, "Goldhaven"], [9, "Sunspire"]]], [10, "Willowfen", [[11, "Fernbrook"], [12, "Mossvale"], [13, "Willowmere"]]]]], [14, "Belloria", [[15, "Brightmarch", [[16, "Bellford"], [17, "Dawnfield"], [18, "Larkspire"]]], [19, "Cloudmere", [[20, "Cloudrest"], [21, "Mistvale"], [22, "Silverpond"]]], [23, "Rosevale", [[24, "Bloomstead"], [25, "Rosethorn"], [26, "Velveton"]]]]], [27, "Cindervale", [[28, "Ashenridge", [[29, "Ashenford"], [30, "Emberfall"], [31, "Smokewatch"]]], [32, "Copperwood", [[33, "Brasshaven"], [34, "Coppershade"], [35, "Redleaf"]]], [36, "Flintmoor", [[37, "Flintspire"], [38, "Greyfen"], [39, "Stonehollow"]]]]]];
+            
+            const [country, state, city] = ["address.country", "address.state", "address.city"].map((id) => document.getElementById(id));
+
+            const childrenOf = (items = [], select) => items.find(([id]) => id === Number(select.value))?.[2];
+
+            function fill(select, values = []) {
+                select.replaceChildren(new Option("", ""), ...values.map(([id, name]) => new Option(name, id)));
+                select.disabled = values.length === 0;
+            }
+
+            country.onchange = () => {
+                fill(state, childrenOf(locations, country));
+                fill(city);
+            };
+
+            state.onchange = () => fill(city, childrenOf(childrenOf(locations, country), state));
+
+            fill(country, locations);
+        }
+
+        function initializeTheme() {
+            document.querySelector(".theme").onchange = (event) => {
+                document.documentElement.dataset.theme = event.target.value;
+            };
+        }
+
+        initializeTheme();
+        initializeFlags();
+        initializeLocations();
+    </script>
+</body>
+
+</html>
